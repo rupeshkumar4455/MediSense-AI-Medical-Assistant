@@ -168,7 +168,7 @@ function analyzeSymptoms(inputText) {
   return scores
     .filter(d => d.matchCount > 0)
     .sort((a, b) => b.score - a.score)
-    .slice(0, 5);
+    .slice(0, 3);
 }
 
 function getSeverityClass(severity) {
