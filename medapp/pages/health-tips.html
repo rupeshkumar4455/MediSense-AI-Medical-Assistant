@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Health Tips — MediSense</title>
+  <link rel="stylesheet" href="../css/style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-brand">
+      <span class="nav-logo">⚕</span>
+      <span class="nav-title">MediSense</span>
+    </div>
+    <div class="nav-links">
+      <a href="../index.html">Home</a>
+      <a href="symptom-checker.html">Symptom Checker</a>
+      <a href="chatbot.html">AI Assistant</a>
+      <a href="health-tips.html" class="active">Health Tips</a>
+    </div>
+    <div class="nav-cta">
+      <a href="symptom-checker.html" class="btn-primary">Check Symptoms</a>
+    </div>
+  </nav>
+
+  <div class="page-header">
+    <h1>💡 Health Tips</h1>
+    <p>Evidence-based tips to help you live healthier every day.</p>
+  </div>
+
+  <div class="tips-layout">
+    <div class="tips-filters" id="filters">
+      <button class="filter-btn active" onclick="filterTips('all', this)">All</button>
+      <button class="filter-btn" onclick="filterTips('nutrition', this)">🥗 Nutrition</button>
+      <button class="filter-btn" onclick="filterTips('fitness', this)">🏃 Fitness</button>
+      <button class="filter-btn" onclick="filterTips('mental', this)">🧠 Mental Health</button>
+      <button class="filter-btn" onclick="filterTips('sleep', this)">😴 Sleep</button>
+      <button class="filter-btn" onclick="filterTips('prevention', this)">🛡️ Prevention</button>
+      <button class="filter-btn" onclick="filterTips('hygiene', this)">🧼 Hygiene</button>
+    </div>
+
+    <div class="tips-grid" id="tips-grid"></div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-brand">⚕ MediSense</div>
+    <p class="footer-disclaimer">MediSense is an AI-based informational tool. Always consult a qualified healthcare professional for medical advice.</p>
+  </footer>
+
+  <script src="../js/main.js"></script>
+  <script>
+    const TIPS = [
+      { icon: '💧', cat: 'nutrition', title: 'Drink Water Before Meals', body: 'Drinking a glass of water 30 minutes before eating can help with digestion and reduce calorie intake, supporting healthy weight management.' },
+      { icon: '🥦', cat: 'nutrition', title: 'Eat the Rainbow', body: 'Consume fruits and vegetables of different colors daily. Each color provides different antioxidants, vitamins, and minerals your body needs.' },
+      { icon: '🧂', cat: 'nutrition', title: 'Reduce Salt Intake', body: 'The WHO recommends less than 5g of salt per day. Excess sodium raises blood pressure. Use herbs and spices for flavor instead.' },
+      { icon: '🍬', cat: 'nutrition', title: 'Limit Added Sugars', body: 'Added sugars contribute to obesity, diabetes, and tooth decay. Read food labels and limit sugary drinks, sweets, and processed foods.' },
+      { icon: '🐟', cat: 'nutrition', title: 'Eat Fatty Fish Weekly', body: 'Salmon, mackerel, and sardines are rich in omega-3 fatty acids which support heart and brain health. Aim for 2 servings per week.' },
+      { icon: '🌾', cat: 'nutrition', title: 'Choose Whole Grains', body: 'Whole grains like brown rice, oats, and whole wheat bread contain more fiber, vitamins, and minerals than their refined counterparts.' },
+      { icon: '🏃', cat: 'fitness', title: '10,000 Steps a Day', body: 'Walking 10,000 steps daily reduces the risk of heart disease, diabetes, and improves mood. Even 7,000 steps shows significant health benefits.' },
+      { icon: '💪', cat: 'fitness', title: 'Strength Train Twice a Week', body: 'Resistance training preserves muscle mass, strengthens bones, boosts metabolism, and reduces risk of chronic diseases as you age.' },
+      { icon: '🧘', cat: 'fitness', title: 'Stretch Every Morning', body: 'A 5–10 minute morning stretching routine improves flexibility, reduces injury risk, increases blood flow, and boosts energy for the day.' },
+      { icon: '🚴', cat: 'fitness', title: 'Take the Stairs', body: 'Replacing elevators with stairs is a simple way to add cardiovascular exercise. Even 2 minutes of stair climbing daily benefits heart health.' },
+      { icon: '🏊', cat: 'fitness', title: 'Swimming for Full Body Fitness', body: 'Swimming is one of the best full-body, low-impact exercises. It improves cardiovascular health, muscle strength, and is easy on joints.' },
+      { icon: '🧠', cat: 'mental', title: 'Practice Gratitude Daily', body: 'Writing down 3 things you\'re grateful for each day rewires your brain for positivity, reduces stress, and improves mental wellbeing.' },
+      { icon: '📵', cat: 'mental', title: 'Digital Detox Breaks', body: 'Take a 30-minute break from all screens daily. Constant phone use is linked to anxiety, poor sleep, and reduced attention span.' },
+      { icon: '🤝', cat: 'mental', title: 'Nurture Social Connections', body: 'Strong social relationships reduce the risk of depression, dementia, and early death. Call a friend, join a club, or volunteer regularly.' },
+      { icon: '🌳', cat: 'mental', title: 'Spend Time in Nature', body: 'Research shows 20 minutes in nature reduces cortisol levels. Walking in parks, forests, or near water significantly lowers stress and anxiety.' },
+      { icon: '✍️', cat: 'mental', title: 'Journaling for Mental Clarity', body: 'Writing about your thoughts and feelings helps process emotions, reduce anxiety, and gain perspective on problems. Even 5 minutes helps.' },
+      { icon: '😴', cat: 'sleep', title: 'Consistent Sleep Schedule', body: 'Going to bed and waking at the same time every day (even weekends) regulates your circadian rhythm and dramatically improves sleep quality.' },
+      { icon: '📱', cat: 'sleep', title: 'No Screens 1 Hour Before Bed', body: 'Blue light from phones and tablets suppresses melatonin. Use blue light filters or switch to books and calm music before bedtime.' },
+      { icon: '🌡️', cat: 'sleep', title: 'Cool Bedroom for Better Sleep', body: 'The ideal bedroom temperature for sleep is 16–19°C (60–67°F). A cooler room helps lower body temperature, triggering deeper sleep.' },
+      { icon: '☕', cat: 'sleep', title: 'Cut Caffeine After 2 PM', body: 'Caffeine has a half-life of 5–6 hours. An afternoon coffee can still affect your sleep. Switch to herbal tea after 2 PM.' },
+      { icon: '💉', cat: 'prevention', title: 'Stay Up to Date on Vaccines', body: 'Vaccinations prevent serious diseases like influenza, hepatitis, HPV, and pneumonia. Check with your doctor about which vaccines you need.' },
+      { icon: '🩺', cat: 'prevention', title: 'Annual Health Checkups', body: 'Regular health screenings catch problems early when they\'re most treatable. Get blood pressure, blood sugar, cholesterol, and BMI checked yearly.' },
+      { icon: '☀️', cat: 'prevention', title: 'Use Sunscreen Daily', body: 'Apply SPF 30+ sunscreen every day, even when cloudy. UV rays cause skin aging, pigmentation, and are the leading cause of skin cancer.' },
+      { icon: '🚭', cat: 'prevention', title: 'Quit Smoking', body: 'Smoking damages nearly every organ. Within 20 minutes of quitting, blood pressure drops. After 10 years, cancer risk is cut in half.' },
+      { icon: '🍷', cat: 'prevention', title: 'Limit Alcohol Consumption', body: 'Safe limits are 1 drink/day for women and 2 for men. Excess alcohol increases risk of liver disease, cancer, and cardiovascular disease.' },
+      { icon: '🧼', cat: 'hygiene', title: 'Wash Hands for 20 Seconds', body: 'Proper handwashing with soap and water for at least 20 seconds is the single most effective way to prevent the spread of illness.' },
+      { icon: '🪥', cat: 'hygiene', title: 'Brush & Floss Twice Daily', body: 'Oral health is linked to heart disease and diabetes. Brush for 2 minutes twice daily and floss once. Replace your toothbrush every 3 months.' },
+      { icon: '🏠', cat: 'hygiene', title: 'Keep Indoor Air Clean', body: 'Open windows for ventilation, use air purifiers, avoid indoor smoking, and add houseplants. Poor air quality worsens respiratory conditions.' },
+      { icon: '🧴', cat: 'hygiene', title: 'Moisturize Your Skin', body: 'Healthy skin is your body\'s first defense barrier. Apply moisturizer after bathing, drink adequate water, and avoid very hot showers.' },
+      { icon: '👁️', cat: 'hygiene', title: 'Give Your Eyes a Break', body: 'Follow the 20-20-20 rule: every 20 minutes, look 20 feet away for 20 seconds. Reduces digital eye strain and prevents headaches.' },
+    ];
+
+    let currentFilter = 'all';
+
+    function filterTips(cat, btn) {
+      currentFilter = cat;
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderTips();
+    }
+
+    function renderTips() {
+      const grid = document.getElementById('tips-grid');
+      const filtered = currentFilter === 'all' ? TIPS : TIPS.filter(t => t.cat === currentFilter);
+      grid.innerHTML = filtered.map((tip, i) => `
+        <div class="tip-card" style="animation: fadeUp 0.4s ease ${i * 0.05}s both">
+          <div class="tip-icon">${tip.icon}</div>
+          <div class="tip-category">${tip.cat === 'mental' ? 'Mental Health' : tip.cat.charAt(0).toUpperCase() + tip.cat.slice(1)}</div>
+          <h3>${tip.title}</h3>
+          <p>${tip.body}</p>
+        </div>
+      `).join('');
+    }
+
+    renderTips();
+  </script>
+</body>
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Assistant — MediSense</title>
+  <link rel="stylesheet" href="../css/style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-brand">
+      <span class="nav-logo">⚕</span>
+      <span class="nav-title">MediSense</span>
+    </div>
+    <div class="nav-links">
+      <a href="../index.html">Home</a>
+      <a href="symptom-checker.html">Symptom Checker</a>
+      <a href="chatbot.html" class="active">AI Assistant</a>
+      <a href="health-tips.html">Health Tips</a>
+    </div>
+    <div class="nav-cta">
+      <a href="symptom-checker.html" class="btn-primary">Check Symptoms</a>
+    </div>
+  </nav>
+
+  <div class="page-header">
+    <h1>🤖 AI Medical Assistant</h1>
+    <p>Ask any health-related question. Available 24/7, always ready to help.</p>
+  </div>
+
+  <div class="chat-layout">
+    <div class="quick-questions" id="quick-questions">
+      <span class="quick-q" onclick="askQuick(this)">What is dengue fever?</span>
+      <span class="quick-q" onclick="askQuick(this)">How to reduce fever at home?</span>
+      <span class="quick-q" onclick="askQuick(this)">Signs of dehydration?</span>
+      <span class="quick-q" onclick="askQuick(this)">When to see a doctor?</span>
+      <span class="quick-q" onclick="askQuick(this)">How to boost immunity?</span>
+      <span class="quick-q" onclick="askQuick(this)">What is diabetes?</span>
+    </div>
+
+    <div class="chat-window" id="chat-window">
+      <!-- Welcome message -->
+      <div class="chat-msg bot">
+        <div class="chat-avatar">⚕</div>
+        <div class="chat-bubble">
+          Hello! I'm <strong>MediSense AI</strong>, your personal medical assistant. 👋<br/><br/>
+          I can help you with:
+          <ul style="margin-top:0.5rem;padding-left:1.2rem;line-height:2;">
+            <li>Understanding symptoms and conditions</li>
+            <li>General health and wellness advice</li>
+            <li>When to seek medical attention</li>
+            <li>Medication and treatment basics</li>
+            <li>Preventive care tips</li>
+          </ul>
+          <br/>
+          <em style="font-size:0.82rem;opacity:0.7;">⚠️ I provide general health information only. Please consult a doctor for personal medical advice.</em>
+        </div>
+      </div>
+    </div>
+
+    <div class="chat-input-row">
+      <textarea
+        class="chat-input" id="chat-input"
+        placeholder="Ask me anything about health, symptoms, or conditions..."
+        rows="1"
+        onkeydown="handleKey(event)"
+        oninput="autoResize(this)"
+      ></textarea>
+      <button class="chat-send-btn" onclick="sendMessage()" title="Send">➤</button>
+    </div>
+  </div>
+
+  <script src="../js/main.js"></script>
+  <script>
+    // ─── MEDICAL KNOWLEDGE BASE ───
+    const KB = [
+      // Diseases info
+      { keys: ['dengue','dengue fever'], response: `<strong>Dengue Fever</strong> is a mosquito-borne viral disease transmitted by the Aedes aegypti mosquito.<br/><br/><strong>Key symptoms:</strong> High fever (40°C/104°F), severe headache, pain behind the eyes, joint and muscle pain, nausea, vomiting, and rash.<br/><br/><strong>Treatment:</strong> No specific antiviral treatment. Rest, fluids, and paracetamol for fever. Avoid aspirin and ibuprofen. Severe cases need hospitalization.<br/><br/>⚠️ Seek immediate care if you develop bleeding gums, blood in urine, or severe abdominal pain.` },
+      { keys: ['malaria'], response: `<strong>Malaria</strong> is caused by Plasmodium parasites transmitted through infected Anopheles mosquito bites.<br/><br/><strong>Symptoms:</strong> Fever, chills, sweating occurring in cycles, headache, nausea, and muscle pain. Symptoms appear 10–15 days after being bitten.<br/><br/><strong>Treatment:</strong> Antimalarial drugs (chloroquine, artemisinin). Early diagnosis is critical. Can be life-threatening if untreated.<br/><br/>🏥 Always see a doctor if you have fever after visiting a malaria-endemic area.` },
+      { keys: ['covid','covid-19','coronavirus'], response: `<strong>COVID-19</strong> is caused by the SARS-CoV-2 coronavirus.<br/><br/><strong>Common symptoms:</strong> Fever, dry cough, fatigue, loss of taste/smell, sore throat, muscle aches, and shortness of breath.<br/><br/><strong>What to do:</strong> Take a rapid antigen test. Isolate if positive. Most cases are mild and resolve in 1–2 weeks. Seek emergency care if you have difficulty breathing, persistent chest pain, or confusion.<br/><br/>💉 Vaccination significantly reduces the risk of severe illness.` },
+      { keys: ['diabetes','blood sugar'], response: `<strong>Diabetes</strong> is a chronic condition where the body cannot properly process blood glucose.<br/><br/><strong>Type 1:</strong> Autoimmune, requires insulin. <strong>Type 2:</strong> Lifestyle-related, managed with diet, exercise, and medication.<br/><br/><strong>Warning signs:</strong> Frequent urination, excessive thirst, unexplained weight loss, blurred vision, slow-healing wounds, and tingling in hands/feet.<br/><br/><strong>Management:</strong> Balanced diet, regular exercise, blood sugar monitoring, and medication as prescribed. See an endocrinologist regularly.` },
+      { keys: ['hypertension','blood pressure','high bp'], response: `<strong>Hypertension (High Blood Pressure)</strong> is when blood pressure consistently reads above 140/90 mmHg.<br/><br/>It's often called the "silent killer" because it has no obvious symptoms but damages arteries, heart, and kidneys over time.<br/><br/><strong>Prevention & Management:</strong><br/>• Reduce salt intake<br/>• Exercise 30 mins daily<br/>• Quit smoking<br/>• Limit alcohol<br/>• Manage stress<br/>• Take prescribed BP medications<br/><br/>Monitor your BP regularly at home.` },
+      { keys: ['asthma','wheezing'], response: `<strong>Asthma</strong> is a chronic respiratory condition causing airway inflammation and narrowing.<br/><br/><strong>Triggers:</strong> Allergens (dust, pollen, pet dander), cold air, exercise, smoke, and respiratory infections.<br/><br/><strong>Symptoms:</strong> Wheezing, shortness of breath, chest tightness, and cough (especially at night).<br/><br/><strong>Management:</strong> Use a reliever inhaler (blue) for attacks. Preventer inhaler (brown) for daily control. Avoid triggers. Have an asthma action plan ready.<br/><br/>🚨 Severe attacks need emergency care.` },
+      { keys: ['pneumonia'], response: `<strong>Pneumonia</strong> is an infection that inflames the air sacs in one or both lungs, which may fill with fluid.<br/><br/><strong>Symptoms:</strong> Cough with phlegm, fever, chills, shortness of breath, and chest pain when breathing.<br/><br/><strong>Causes:</strong> Bacteria (most common), viruses, or fungi.<br/><br/><strong>Treatment:</strong> Bacterial pneumonia is treated with antibiotics. Rest and hydration are important. Severe cases, elderly, and young children may need hospitalization.` },
+      { keys: ['tuberculosis','tb'], response: `<strong>Tuberculosis (TB)</strong> is caused by Mycobacterium tuberculosis and primarily affects the lungs.<br/><br/><strong>Symptoms:</strong> Persistent cough for 3+ weeks, coughing blood, night sweats, fever, weight loss, and fatigue.<br/><br/><strong>Treatment:</strong> A 6–9 month course of multiple antibiotics (DOTS therapy). It is curable with proper treatment. Incomplete treatment leads to drug-resistant TB.<br/><br/>🏥 TB is a notifiable disease. Isolation during initial treatment may be required.` },
+      // General health
+      { keys: ['fever','high temperature','reduce fever'], response: `<strong>Home remedies for fever:</strong><br/><br/>• Stay hydrated — water, electrolyte drinks, clear broths<br/>• Rest in a cool, comfortable room<br/>• Use a damp cloth on forehead<br/>• Wear light clothing<br/>• Take paracetamol (acetaminophen) for temperatures above 38.5°C<br/><br/>⚠️ <strong>See a doctor if:</strong><br/>• Fever is above 40°C (104°F)<br/>• Fever lasts more than 3 days<br/>• Fever in children under 3 months<br/>• Accompanied by severe headache, rash, or stiff neck` },
+      { keys: ['dehydration','dehydrated'], response: `<strong>Signs of Dehydration:</strong><br/><br/><strong>Mild to moderate:</strong> Thirst, dark yellow urine, dry mouth, headache, dizziness, fatigue, and decreased urination.<br/><br/><strong>Severe:</strong> Very dark urine, rapid heartbeat, rapid breathing, sunken eyes, confusion, and no tears when crying (in children).<br/><br/><strong>Treatment:</strong> Drink oral rehydration solutions (ORS), water, clear fluids. Severe dehydration needs IV fluids — go to hospital immediately.` },
+      { keys: ['immunity','immune system','boost immunity'], response: `<strong>How to Boost Your Immunity:</strong><br/><br/>🥗 <strong>Diet:</strong> Eat fruits and vegetables rich in Vitamin C, D, zinc, and antioxidants. Include garlic, ginger, turmeric.<br/><br/>😴 <strong>Sleep:</strong> 7–9 hours of quality sleep is essential.<br/><br/>🏃 <strong>Exercise:</strong> 30 minutes of moderate activity most days.<br/><br/>🧘 <strong>Stress Management:</strong> Chronic stress weakens immunity. Try meditation, yoga, or deep breathing.<br/><br/>🚭 <strong>Avoid:</strong> Smoking, excessive alcohol, and processed foods.<br/><br/>💉 Stay up to date on vaccinations.` },
+      { keys: ['when to see doctor','doctor visit','emergency'], response: `<strong>When to See a Doctor Immediately:</strong><br/><br/>🚨 <strong>Emergency (Call 108/911):</strong><br/>• Chest pain or pressure<br/>• Difficulty breathing<br/>• Sudden severe headache<br/>• Signs of stroke (face drooping, arm weakness, speech difficulty)<br/>• Loss of consciousness<br/>• Severe allergic reaction<br/><br/>📅 <strong>See a Doctor Soon:</strong><br/>• Fever lasting more than 3 days<br/>• Symptoms that worsen instead of improve<br/>• Unusual or persistent symptoms<br/>• Blood in stool, urine, or vomit` },
+      { keys: ['cold','common cold'], response: `<strong>Common Cold</strong> is caused by rhinovirus and affects the upper respiratory tract.<br/><br/><strong>Symptoms:</strong> Runny nose, sneezing, sore throat, mild cough, and low-grade fever.<br/><br/><strong>Treatment (no cure, manage symptoms):</strong><br/>• Rest and stay hydrated<br/>• Honey and warm water/lemon for sore throat<br/>• Steam inhalation for congestion<br/>• OTC decongestants and antihistamines<br/>• Zinc lozenges may shorten duration<br/><br/>Antibiotics don't work against viruses. A cold usually resolves in 7–10 days.` },
+      { keys: ['headache','migraine'], response: `<strong>Types of Headaches:</strong><br/><br/><strong>Tension Headache:</strong> Dull, band-like pressure. Caused by stress, poor posture. Treat with pain relievers and relaxation.<br/><br/><strong>Migraine:</strong> Severe throbbing pain, often one-sided, with nausea and light sensitivity. Can last 4–72 hours. Requires specific migraine medications.<br/><br/><strong>Cluster Headache:</strong> Extremely severe pain around one eye. Needs specialist care.<br/><br/>⚠️ Seek emergency care for: sudden severe "thunderclap" headache, headache with fever and stiff neck, or headache after head injury.` },
+      { keys: ['diet','nutrition','healthy eating','food'], response: `<strong>Principles of Healthy Eating:</strong><br/><br/>🥦 Half your plate: fruits and vegetables<br/>🌾 Choose whole grains over refined<br/>🐟 Lean proteins: fish, legumes, chicken, eggs<br/>🥛 Dairy or dairy alternatives for calcium<br/>💧 Drink 8–10 glasses of water daily<br/>🧂 Limit salt (under 5g/day)<br/>🍬 Limit added sugars<br/>🫒 Use healthy fats (olive oil, nuts, avocado)<br/><br/>Eat mindfully, avoid late-night heavy meals, and maintain regular meal timings.` },
+      { keys: ['sleep','insomnia','sleeping'], response: `<strong>Healthy Sleep Tips:</strong><br/><br/>😴 Adults need 7–9 hours per night<br/><br/><strong>Sleep Hygiene:</strong><br/>• Stick to a regular sleep schedule (even weekends)<br/>• Keep bedroom cool, dark, and quiet<br/>• Avoid screens 1 hour before bed<br/>• No caffeine after 2 PM<br/>• Exercise regularly (but not close to bedtime)<br/>• Avoid large meals before sleep<br/>• Try relaxation techniques: deep breathing, meditation<br/><br/>If insomnia persists for more than a month, consult a doctor.` },
+      { keys: ['stress','anxiety','mental health'], response: `<strong>Managing Stress & Anxiety:</strong><br/><br/>🧘 <strong>Immediate relief:</strong><br/>• Deep breathing: inhale 4 counts, hold 4, exhale 6<br/>• 5-4-3-2-1 grounding technique<br/>• Short walk or light movement<br/><br/>🌿 <strong>Long-term strategies:</strong><br/>• Regular physical exercise<br/>• Mindfulness or meditation practice<br/>• Maintain social connections<br/>• Limit news and social media<br/>• Adequate sleep<br/>• Talk therapy (CBT is highly effective)<br/><br/>🏥 If anxiety is affecting daily life, please seek help from a mental health professional.` },
+      { keys: ['exercise','workout','physical activity'], response: `<strong>Exercise Recommendations (WHO):</strong><br/><br/>Adults should aim for:<br/>• <strong>150–300 min/week</strong> of moderate aerobic activity (brisk walking, cycling, swimming)<br/>• OR <strong>75–150 min/week</strong> of vigorous activity (running, sports)<br/>• <strong>Muscle strengthening</strong> on 2 or more days/week<br/><br/><strong>Benefits:</strong> Reduces risk of heart disease, diabetes, cancer, depression, and improves sleep, mood, and energy.<br/><br/>Start slow and gradually increase intensity. Even 10-minute sessions are beneficial!` },
+    ];
+
+    function findResponse(query) {
+      const q = query.toLowerCase();
+      for (const item of KB) {
+        if (item.keys.some(k => q.includes(k))) {
+          return item.response;
+        }
+      }
+      // Symptom checker cross-reference
+      const results = analyzeSymptoms(query);
+      if (results.length > 0) {
+        return `Based on what you described, here are some possible conditions to be aware of:<br/><br/>` +
+          results.slice(0,3).map((d,i) => `<strong>${i+1}. ${d.name}</strong> (${d.severity})<br/>${d.description}<br/><em>→ ${d.action}</em>`).join('<br/><br/>') +
+          `<br/><br/>⚠️ Please use our <a href="symptom-checker.html" style="color:var(--clr-primary)">Symptom Checker</a> for a more detailed analysis, and always consult a doctor.`;
+      }
+      return `That's a thoughtful question! While I may not have a specific answer for "<em>${query}</em>", I can help with:<br/><br/>• Symptoms and common conditions<br/>• When to see a doctor<br/>• General wellness and prevention<br/>• Medication basics<br/><br/>Try rephrasing, or ask about a specific symptom, disease, or health topic. You can also use our <a href="symptom-checker.html" style="color:var(--clr-primary)">Symptom Checker</a> for detailed analysis.<br/><br/><em>Remember: Always consult a qualified healthcare professional for personal medical advice.</em>`;
+    }
+
+    function addMessage(text, role) {
+      const window = document.getElementById('chat-window');
+      const div = document.createElement('div');
+      div.className = `chat-msg ${role}`;
+      div.innerHTML = `
+        <div class="chat-avatar">${role === 'bot' ? '⚕' : '👤'}</div>
+        <div class="chat-bubble">${text}</div>
+      `;
+      window.appendChild(div);
+      window.scrollTop = window.scrollHeight;
+    }
+
+    function showTyping() {
+      const window = document.getElementById('chat-window');
+      const div = document.createElement('div');
+      div.className = 'chat-msg bot';
+      div.id = 'typing-indicator';
+      div.innerHTML = `
+        <div class="chat-avatar">⚕</div>
+        <div class="chat-bubble">
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+        </div>
+      `;
+      window.appendChild(div);
+      window.scrollTop = window.scrollHeight;
+    }
+
+    function removeTyping() {
+      const el = document.getElementById('typing-indicator');
+      if (el) el.remove();
+    }
+
+    function sendMessage() {
+      const input = document.getElementById('chat-input');
+      const text = input.value.trim();
+      if (!text) return;
+      input.value = '';
+      input.style.height = 'auto';
+
+      addMessage(text, 'user');
+      showTyping();
+
+      const delay = 700 + Math.random() * 500;
+      setTimeout(() => {
+        removeTyping();
+        const response = findResponse(text);
+        addMessage(response, 'bot');
+        // Hide quick questions after first interaction
+        document.getElementById('quick-questions').style.display = 'none';
+      }, delay);
+    }
+
+    function askQuick(el) {
+      document.getElementById('chat-input').value = el.textContent;
+      sendMessage();
+    }
+
+    function handleKey(e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    }
+
+    function autoResize(el) {
+      el.style.height = 'auto';
+      el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+    }
+  </script>
+</body>
+</html>

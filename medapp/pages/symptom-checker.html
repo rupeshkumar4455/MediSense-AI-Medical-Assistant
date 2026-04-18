@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Symptom Checker — MediSense</title>
+  <link rel="stylesheet" href="../css/style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-brand">
+      <span class="nav-logo">⚕</span>
+      <span class="nav-title">MediSense</span>
+    </div>
+    <div class="nav-links">
+      <a href="../index.html">Home</a>
+      <a href="symptom-checker.html" class="active">Symptom Checker</a>
+      <a href="chatbot.html">AI Assistant</a>
+      <a href="health-tips.html">Health Tips</a>
+    </div>
+    <div class="nav-cta">
+      <a href="chatbot.html" class="btn-primary">AI Chat</a>
+    </div>
+  </nav>
+
+  <div class="page-header">
+    <h1>🔍 Symptom Checker</h1>
+    <p>Describe your symptoms and get the top 5 most likely conditions instantly.</p>
+  </div>
+
+  <div class="checker-layout">
+    <!-- INPUT PANEL -->
+    <div class="checker-panel">
+      <h2>What are you feeling?</h2>
+      <p class="sub">Type your symptoms in detail, or select from common ones below.</p>
+
+      <textarea
+        id="symptom-input"
+        class="symptom-input-area"
+        placeholder="e.g. I have a high fever, severe headache, body aches and feel very tired..."
+      ></textarea>
+
+      <div class="quick-label">⚡ Quick select common symptoms:</div>
+      <div class="tag-area" id="tag-area">
+        <span class="symptom-tag" onclick="toggleTag(this)">Fever</span>
+        <span class="symptom-tag" onclick="toggleTag(this)">Headache</span>
+        <span class="symptom-tag" onclick="toggleTag(this)">Cough</span>
+        <span class="symptom-tag" onclick="toggleTag(this)">Fatigue</span>
+        <span class="symptom-tag" onclick="toggleTag(this)">Nausea</span>
+        <span class="symptom-tag" onclick="toggleTag(this)">Sore Throat</span>
+        <span class="symptom-tag" onclick="toggleTag(this)">Body Aches</span>
+        <span class="symptom-tag" onclick="toggleTag(this)">Shortness of Breath</span>
+        <span class="symptom-tag" onclick="toggleTag(this)">Diarrhea</span>
+        <span class="symptom-tag" onclick="toggleTag(this)">Vomiting</span>
+        <span class="symptom-tag" onclick="toggleTag(this)">Chest Pain</span>
+        <span class="symptom-tag" onclick="toggleTag(this)">Dizziness</span>
+        <span class="symptom-tag" onclick="toggleTag(this)">Rash</span>
+        <span class="symptom-tag" onclick="toggleTag(this)">Joint Pain</span>
+        <span class="symptom-tag" onclick="toggleTag(this)">Loss of Appetite</span>
+        <span class="symptom-tag" onclick="toggleTag(this)">Runny Nose</span>
+        <span class="symptom-tag" onclick="toggleTag(this)">Chills</span>
+        <span class="symptom-tag" onclick="toggleTag(this)">Sweating</span>
+        <span class="symptom-tag" onclick="toggleTag(this)">Abdominal Pain</span>
+        <span class="symptom-tag" onclick="toggleTag(this)">Blurred Vision</span>
+      </div>
+
+      <button class="check-btn" onclick="runChecker()" id="check-btn">
+        🔬 Analyse Symptoms
+      </button>
+
+      <button class="check-btn" onclick="clearAll()" style="background:#f1f5f9;color:#64748b;margin-top:0.5rem;">
+        ✕ Clear
+      </button>
+
+      <div class="disclaimer-box" style="margin-top:1.5rem;">
+        ⚠️ <strong>Disclaimer:</strong> This tool is for informational purposes only and does not provide a medical diagnosis. Always consult a qualified healthcare provider.
+      </div>
+    </div>
+
+    <!-- RESULTS PANEL -->
+    <div class="checker-panel results-panel" id="results-panel">
+      <h2>Results</h2>
+      <p class="sub" id="results-sub">Your analysis will appear here.</p>
+      <div id="results-container">
+        <div class="result-placeholder">
+          <div class="big-icon">🩺</div>
+          <div>Enter your symptoms on the left to get started.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-brand">⚕ MediSense</div>
+    <p class="footer-disclaimer">MediSense is an AI-based informational tool. Always consult a qualified healthcare professional for medical advice.</p>
+  </footer>
+
+  <script src="../js/main.js"></script>
+  <script>
+    const selectedTags = new Set();
+
+    function toggleTag(el) {
+      const sym = el.textContent.toLowerCase();
+      if (el.classList.contains('selected')) {
+        el.classList.remove('selected');
+        selectedTags.delete(sym);
+      } else {
+        el.classList.add('selected');
+        selectedTags.add(sym);
+      }
+      syncTagsToInput();
+    }
+
+    function syncTagsToInput() {
+      const input = document.getElementById('symptom-input');
+      const manual = input.value.replace(/,?\s*(fever|headache|cough|fatigue|nausea|sore throat|body aches|shortness of breath|diarrhea|vomiting|chest pain|dizziness|rash|joint pain|loss of appetite|runny nose|chills|sweating|abdominal pain|blurred vision)/gi, '').trim();
+      const tags = Array.from(selectedTags);
+      input.value = [manual, ...tags].filter(Boolean).join(', ');
+    }
+
+    function runChecker() {
+      const input = document.getElementById('symptom-input').value.trim();
+      if (!input) {
+        alert('Please enter or select at least one symptom.');
+        return;
+      }
+
+      const btn = document.getElementById('check-btn');
+      btn.textContent = '⏳ Analysing...';
+      btn.disabled = true;
+
+      setTimeout(() => {
+        const results = analyzeSymptoms(input);
+        renderResults(results, input);
+        btn.textContent = '🔬 Analyse Symptoms';
+        btn.disabled = false;
+      }, 700);
+    }
+
+    function renderResults(results, input) {
+      const container = document.getElementById('results-container');
+      const sub = document.getElementById('results-sub');
+
+      if (results.length === 0) {
+        container.innerHTML = `
+          <div class="result-placeholder">
+            <div class="big-icon">🤔</div>
+            <div>No matching conditions found. Try describing your symptoms differently or use more specific terms.</div>
+          </div>`;
+        sub.textContent = 'No matches found for your symptoms.';
+        return;
+      }
+
+      sub.textContent = `Found ${results.length} possible condition${results.length > 1 ? 's' : ''} based on your symptoms.`;
+
+      container.innerHTML = results.map((d, i) => {
+        const pct = Math.round(d.score * 100);
+        const barPct = Math.max(pct, 15);
+        return `
+        <div class="disease-card" style="animation-delay:${i*0.07}s">
+          <div class="disease-header">
+            <div class="disease-rank">${i + 1}</div>
+            <div class="disease-name">${d.name}</div>
+            <span class="severity-badge ${getSeverityClass(d.severity)}">${getSeverityLabel(d.severity)}</span>
+          </div>
+          <div class="match-bar-wrap">
+            <div class="match-label">Symptom match: ${d.matchCount} of ${d.symptoms.length} (${pct}%)</div>
+            <div class="match-bar"><div class="match-fill" style="width:${barPct}%"></div></div>
+          </div>
+          <div class="disease-desc">${d.description}</div>
+          <div class="disease-action">💊 What to do: ${d.action}</div>
+        </div>`;
+      }).join('');
+    }
+
+    function clearAll() {
+      document.getElementById('symptom-input').value = '';
+      selectedTags.clear();
+      document.querySelectorAll('.symptom-tag').forEach(t => t.classList.remove('selected'));
+      document.getElementById('results-container').innerHTML = `
+        <div class="result-placeholder">
+          <div class="big-icon">🩺</div>
+          <div>Enter your symptoms on the left to get started.</div>
+        </div>`;
+      document.getElementById('results-sub').textContent = 'Your analysis will appear here.';
+    }
+
+    // Allow Enter key
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('symptom-input').addEventListener('keydown', e => {
+        if (e.key === 'Enter' && e.ctrlKey) runChecker();
+      });
+    });
+  </script>
+</body>
+</html>

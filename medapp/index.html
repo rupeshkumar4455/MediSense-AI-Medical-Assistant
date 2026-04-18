@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MediSense — AI Medical Assistant</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+</head>
+<body class="home-page">
+
+  <!-- NAV -->
+  <nav class="navbar">
+    <div class="nav-brand">
+      <span class="nav-logo">⚕</span>
+      <span class="nav-title">MediSense</span>
+    </div>
+    <div class="nav-links">
+      <a href="index.html" class="active">Home</a>
+      <a href="pages/symptom-checker.html">Symptom Checker</a>
+      <a href="pages/chatbot.html">AI Assistant</a>
+      <a href="pages/health-tips.html">Health Tips</a>
+    </div>
+    <div class="nav-cta">
+      <a href="pages/symptom-checker.html" class="btn-primary">Check Symptoms</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg">
+      <div class="hero-orb orb1"></div>
+      <div class="hero-orb orb2"></div>
+      <div class="hero-grid"></div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-badge">🔬 AI-Powered Medical Assistant</div>
+      <h1 class="hero-title">Your Personal<br/><em>Medical Guide</em></h1>
+      <p class="hero-subtitle">Understand your symptoms, get health insights, and make informed decisions — all in one place. Not a replacement for doctors, but a trusted first step.</p>
+      <div class="hero-actions">
+        <a href="pages/symptom-checker.html" class="btn-hero-primary">Check My Symptoms</a>
+        <a href="pages/chatbot.html" class="btn-hero-secondary">Talk to AI Assistant</a>
+      </div>
+      <div class="hero-disclaimer">⚠️ For informational purposes only. Always consult a qualified doctor for medical advice.</div>
+    </div>
+    <div class="hero-visual">
+      <div class="pulse-ring"></div>
+      <div class="hero-card card-float">
+        <div class="hcard-icon">🫀</div>
+        <div>
+          <div class="hcard-title">Heart Rate</div>
+          <div class="hcard-val">72 <span>bpm</span></div>
+        </div>
+        <div class="hcard-status good">Normal</div>
+      </div>
+      <div class="hero-card card-float2">
+        <div class="hcard-icon">🩺</div>
+        <div>
+          <div class="hcard-title">Diagnosis Ready</div>
+          <div class="hcard-val">Top 5 <span>results</span></div>
+        </div>
+        <div class="hcard-status info">Instant</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features">
+    <div class="section-label">What We Offer</div>
+    <h2 class="section-title">Everything you need to<br/>understand your health</h2>
+    <div class="features-grid">
+      <div class="feature-card" onclick="location.href='pages/symptom-checker.html'">
+        <div class="feat-icon">🔍</div>
+        <h3>Symptom Checker</h3>
+        <p>Enter your symptoms and instantly get the top 5 most likely conditions with severity levels and what to do next.</p>
+        <span class="feat-link">Try it →</span>
+      </div>
+      <div class="feature-card" onclick="location.href='pages/chatbot.html'">
+        <div class="feat-icon">🤖</div>
+        <h3>AI Chat Assistant</h3>
+        <p>Ask any health-related question in plain language. Our AI gives clear, evidence-based answers around the clock.</p>
+        <span class="feat-link">Chat now →</span>
+      </div>
+      <div class="feature-card" onclick="location.href='pages/health-tips.html'">
+        <div class="feat-icon">💡</div>
+        <h3>Health Tips</h3>
+        <p>Curated daily tips on nutrition, mental wellness, fitness, and preventive care — tailored for everyday life.</p>
+        <span class="feat-link">Explore →</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section class="stats-section">
+    <div class="stat-item">
+      <div class="stat-num">500+</div>
+      <div class="stat-label">Symptoms Covered</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">200+</div>
+      <div class="stat-label">Diseases in Database</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">24/7</div>
+      <div class="stat-label">AI Assistance</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">Free</div>
+      <div class="stat-label">Always & Forever</div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how-it-works">
+    <div class="section-label">How It Works</div>
+    <h2 class="section-title">Three simple steps</h2>
+    <div class="steps-row">
+      <div class="step">
+        <div class="step-num">01</div>
+        <h4>Enter Symptoms</h4>
+        <p>Type what you're feeling — headache, fever, fatigue, or any combination.</p>
+      </div>
+      <div class="step-arrow">→</div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <h4>AI Analyses</h4>
+        <p>Our system cross-references your symptoms against a medical knowledge base.</p>
+      </div>
+      <div class="step-arrow">→</div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <h4>Get Insights</h4>
+        <p>Receive the top 5 possible conditions with descriptions and next steps.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-brand">
+      <span class="nav-logo">⚕</span> MediSense
+    </div>
+    <p class="footer-disclaimer">MediSense is an AI-based informational tool and does not provide medical diagnosis. Always seek the advice of a qualified healthcare professional for medical concerns.</p>
+    <p class="footer-copy">© 2026 MediSense. Built for educational purposes.</p>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
